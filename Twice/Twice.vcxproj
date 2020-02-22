@@ -147,22 +147,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Flex Include="sample.l">
+    <Flex Include="flex_bison\sample.l">
       <FileType>Document</FileType>
     </Flex>
   </ItemGroup>
   <ItemGroup>
-    <Bison Include="sample.y" />
+    <Bison Include="flex_bison\sample.y" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="sample.flex.cpp" />
-    <ClCompile Include="sample.tab.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="gen\sample.flex.cpp" />
+    <ClCompile Include="gen\sample.tab.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FlexLexer.h" />
-    <ClInclude Include="sample.tab.h" />
-    <ClInclude Include="stack.hh" />
+    <ClInclude Include="gen\sample.tab.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="scripts\test.twi" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

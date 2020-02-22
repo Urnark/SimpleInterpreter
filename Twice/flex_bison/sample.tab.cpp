@@ -43,10 +43,11 @@
 // Unqualified %code blocks.
 #line 10 "sample.y"
 
-  #define YY_DECL yy::parser::symbol_type yylex()
-  YY_DECL;
+    #include <string>
+    #define YY_DECL yy::parser::symbol_type yylex()
+    YY_DECL;
 
-#line 50 "sample.tab.cpp"
+#line 51 "sample.tab.cpp"
 
 
 #ifndef YY_
@@ -118,7 +119,7 @@
 #define YYRECOVERING()  (!!yyerrstatus_)
 
 namespace yy {
-#line 122 "sample.tab.cpp"
+#line 123 "sample.tab.cpp"
 
 
   /// Build a parser object.
@@ -554,55 +555,55 @@ namespace yy {
           switch (yyn)
             {
   case 2:
-#line 26 "sample.y"
+#line 27 "sample.y"
                                                               { }
-#line 560 "sample.tab.cpp"
+#line 561 "sample.tab.cpp"
     break;
 
   case 3:
-#line 29 "sample.y"
+#line 30 "sample.y"
                                                               { }
-#line 566 "sample.tab.cpp"
+#line 567 "sample.tab.cpp"
     break;
 
   case 4:
-#line 30 "sample.y"
+#line 31 "sample.y"
                                                               { }
-#line 572 "sample.tab.cpp"
+#line 573 "sample.tab.cpp"
     break;
 
   case 5:
-#line 33 "sample.y"
+#line 34 "sample.y"
                                                               { }
-#line 578 "sample.tab.cpp"
+#line 579 "sample.tab.cpp"
     break;
 
   case 6:
-#line 34 "sample.y"
+#line 35 "sample.y"
                                                               { }
-#line 584 "sample.tab.cpp"
+#line 585 "sample.tab.cpp"
     break;
 
   case 7:
-#line 38 "sample.y"
+#line 39 "sample.y"
                                                               { }
-#line 590 "sample.tab.cpp"
+#line 591 "sample.tab.cpp"
     break;
 
   case 8:
-#line 42 "sample.y"
+#line 43 "sample.y"
                                                               { std::cout << "number: " << yystack_[0].value.as < double > () << std::endl; }
-#line 596 "sample.tab.cpp"
+#line 597 "sample.tab.cpp"
     break;
 
   case 9:
-#line 43 "sample.y"
+#line 44 "sample.y"
                                                               { std::cout << "identifier: " << yystack_[0].value.as < std::string > () << std::endl; }
-#line 602 "sample.tab.cpp"
+#line 603 "sample.tab.cpp"
     break;
 
 
-#line 606 "sample.tab.cpp"
+#line 607 "sample.tab.cpp"
 
             default:
               break;
@@ -855,7 +856,7 @@ namespace yy {
   const signed char
   parser::yyrline_[] =
   {
-       0,    26,    26,    29,    30,    33,    34,    38,    42,    43
+       0,    27,    27,    30,    31,    34,    35,    39,    43,    44
   };
 
   // Print the state stack on the debug stream.
@@ -889,6 +890,6 @@ namespace yy {
 
 
 } // yy
-#line 893 "sample.tab.cpp"
+#line 894 "sample.tab.cpp"
 
-#line 46 "sample.y"
+#line 47 "sample.y"

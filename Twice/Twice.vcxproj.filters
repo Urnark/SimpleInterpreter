@@ -15,31 +15,31 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Bison Include="sample.y" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="gen\sample.flex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sample.tab.cpp">
+    <ClCompile Include="gen\sample.tab.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="sample.flex.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Flex Include="sample.l" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="sample.tab.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FlexLexer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="stack.hh">
+    <ClInclude Include="gen\sample.tab.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Flex Include="flex_bison\sample.l" />
+  </ItemGroup>
+  <ItemGroup>
+    <Bison Include="flex_bison\sample.y" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="scripts\test.twi" />
   </ItemGroup>
 </Project>

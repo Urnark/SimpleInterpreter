@@ -1,5 +1,5 @@
 %top{
-#include "sample.tab.h"
+#include "../gen/sample.tab.h"
 #define YY_DECL yy::parser::symbol_type yylex()
 }
 %option noyywrap nounput batch noinput
