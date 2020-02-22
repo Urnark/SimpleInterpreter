@@ -1,11 +1,12 @@
 #include <iostream>
-#include "../gen/sample.tab.h"
+#include "../flex_bison/sample.tab.h"
+#include "../flex_bison/location.hh"
 
 extern FILE* yyin;
 
-void yy::parser::error(std::string const& err)
+void yy::parser::error(const yy::location&loc, std::string const& err)
 {
-	std::cout << "It's one of the bad ones... " << err << std::endl;
+	std::cout << "It's one of the bad ones... " << err << ", loc: " << loc << std::endl;
 }
 int main()
 {

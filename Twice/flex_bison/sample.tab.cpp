@@ -71,6 +71,25 @@
 # endif
 #endif
 
+#define YYRHSLOC(Rhs, K) ((Rhs)[K].location)
+/* YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
+   If N is 0, then set CURRENT to the empty location which ends
+   the previous symbol: RHS[0] (always defined).  */
+
+# ifndef YYLLOC_DEFAULT
+#  define YYLLOC_DEFAULT(Current, Rhs, N)                               \
+    do                                                                  \
+      if (N)                                                            \
+        {                                                               \
+          (Current).begin  = YYRHSLOC (Rhs, 1).begin;                   \
+          (Current).end    = YYRHSLOC (Rhs, N).end;                     \
+        }                                                               \
+      else                                                              \
+        {                                                               \
+          (Current).begin = (Current).end = YYRHSLOC (Rhs, 0).end;      \
+        }                                                               \
+    while (false)
+# endif
 
 
 // Enable debugging if requested.
@@ -119,7 +138,7 @@
 #define YYRECOVERING()  (!!yyerrstatus_)
 
 namespace yy {
-#line 123 "sample.tab.cpp"
+#line 142 "sample.tab.cpp"
 
 
   /// Build a parser object.
@@ -183,7 +202,7 @@ namespace yy {
   {}
 
   parser::stack_symbol_type::stack_symbol_type (YY_RVREF (stack_symbol_type) that)
-    : super_type (YY_MOVE (that.state))
+    : super_type (YY_MOVE (that.state), YY_MOVE (that.location))
   {
     switch (that.type_get ())
     {
@@ -211,7 +230,7 @@ namespace yy {
   }
 
   parser::stack_symbol_type::stack_symbol_type (state_type s, YY_MOVE_REF (symbol_type) that)
-    : super_type (s)
+    : super_type (s, YY_MOVE (that.location))
   {
     switch (that.type_get ())
     {
@@ -260,6 +279,7 @@ namespace yy {
         break;
     }
 
+    location = that.location;
     return *this;
   }
 
@@ -286,6 +306,7 @@ namespace yy {
         break;
     }
 
+    location = that.location;
     // that is emptied.
     that.state = empty_state;
     return *this;
@@ -316,7 +337,8 @@ namespace yy {
       std::abort ();
 #endif
     yyo << (yytype < yyntokens_ ? "token" : "nterm")
-        << ' ' << yytname_[yytype] << " (";
+        << ' ' << yytname_[yytype] << " ("
+        << yysym.location << ": ";
     YYUSE (yytype);
     yyo << ')';
   }
@@ -415,6 +437,9 @@ namespace yy {
 
     /// The lookahead symbol.
     symbol_type yyla;
+
+    /// The locations where the error started and ended.
+    stack_symbol_type yyerror_range[3];
 
     /// The return value of parse ().
     int yyresult;
@@ -545,6 +570,12 @@ namespace yy {
     }
 
 
+      // Default location.
+      {
+        stack_type::slice range (yystack_, yylen);
+        YYLLOC_DEFAULT (yylhs.location, range, yylen);
+        yyerror_range[1].location = yylhs.location;
+      }
 
       // Perform the reduction.
       YY_REDUCE_PRINT (yyn);
@@ -555,55 +586,55 @@ namespace yy {
           switch (yyn)
             {
   case 2:
-#line 27 "sample.y"
+#line 29 "sample.y"
                                                               { }
-#line 561 "sample.tab.cpp"
+#line 592 "sample.tab.cpp"
     break;
 
   case 3:
-#line 30 "sample.y"
+#line 32 "sample.y"
                                                               { }
-#line 567 "sample.tab.cpp"
+#line 598 "sample.tab.cpp"
     break;
 
   case 4:
-#line 31 "sample.y"
+#line 33 "sample.y"
                                                               { }
-#line 573 "sample.tab.cpp"
+#line 604 "sample.tab.cpp"
     break;
 
   case 5:
-#line 34 "sample.y"
+#line 36 "sample.y"
                                                               { }
-#line 579 "sample.tab.cpp"
+#line 610 "sample.tab.cpp"
     break;
 
   case 6:
-#line 35 "sample.y"
+#line 37 "sample.y"
                                                               { }
-#line 585 "sample.tab.cpp"
+#line 616 "sample.tab.cpp"
     break;
 
   case 7:
-#line 39 "sample.y"
+#line 41 "sample.y"
                                                               { }
-#line 591 "sample.tab.cpp"
+#line 622 "sample.tab.cpp"
     break;
 
   case 8:
-#line 43 "sample.y"
-                                                              { std::cout << "number: " << yystack_[0].value.as < double > () << std::endl; }
-#line 597 "sample.tab.cpp"
+#line 45 "sample.y"
+                                                              { std::cout << "number: " << yy::location() << ", " << yystack_[0].value.as < double > () << std::endl; }
+#line 628 "sample.tab.cpp"
     break;
 
   case 9:
-#line 44 "sample.y"
+#line 46 "sample.y"
                                                               { std::cout << "identifier: " << yystack_[0].value.as < std::string > () << std::endl; }
-#line 603 "sample.tab.cpp"
+#line 634 "sample.tab.cpp"
     break;
 
 
-#line 607 "sample.tab.cpp"
+#line 638 "sample.tab.cpp"
 
             default:
               break;
@@ -636,10 +667,11 @@ namespace yy {
     if (!yyerrstatus_)
       {
         ++yynerrs_;
-        error (yysyntax_error_ (yystack_[0].state, yyla));
+        error (yyla.location, yysyntax_error_ (yystack_[0].state, yyla));
       }
 
 
+    yyerror_range[1].location = yyla.location;
     if (yyerrstatus_ == 3)
       {
         /* If just tried and failed to reuse lookahead token after an
@@ -700,11 +732,14 @@ namespace yy {
           if (yystack_.size () == 1)
             YYABORT;
 
+          yyerror_range[1].location = yystack_[0].location;
           yy_destroy_ ("Error: popping", yystack_[0]);
           yypop_ ();
           YY_STACK_PRINT ();
         }
 
+      yyerror_range[2].location = yyla.location;
+      YYLLOC_DEFAULT (error_token.location, yyerror_range, 2);
 
       // Shift the error token.
       error_token.state = static_cast<state_type> (yyn);
@@ -769,7 +804,7 @@ namespace yy {
   void
   parser::error (const syntax_error& yyexc)
   {
-    error (yyexc.what ());
+    error (yyexc.location, yyexc.what ());
   }
 
   // Generate an error message.
@@ -856,7 +891,7 @@ namespace yy {
   const signed char
   parser::yyrline_[] =
   {
-       0,    27,    27,    30,    31,    34,    35,    39,    43,    44
+       0,    29,    29,    32,    33,    36,    37,    41,    45,    46
   };
 
   // Print the state stack on the debug stream.
@@ -890,6 +925,6 @@ namespace yy {
 
 
 } // yy
-#line 894 "sample.tab.cpp"
+#line 929 "sample.tab.cpp"
 
-#line 47 "sample.y"
+#line 49 "sample.y"

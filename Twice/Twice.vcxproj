@@ -72,19 +72,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);D:\Programering\Workbench2020\win_flex_bison-2.5.22</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);D:\Programering\Workbench2020\win_flex_bison-2.5.22</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);D:\Programering\Workbench2020\win_flex_bison-2.5.22</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);D:\Programering\Workbench2020\win_flex_bison-2.5.22</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -98,6 +98,15 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Bison>
+      <FilePrefix>
+      </FilePrefix>
+      <OutputFile>%(OutputFile)</OutputFile>
+      <DefinesFile>%(Filename).tab.h</DefinesFile>
+    </Bison>
+    <Flex>
+      <OutputFile>%(Filename).flex.cpp</OutputFile>
+    </Flex>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -111,6 +120,15 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Bison>
+      <FilePrefix>
+      </FilePrefix>
+      <OutputFile>%(OutputFile)</OutputFile>
+      <DefinesFile>%(Filename).tab.h</DefinesFile>
+    </Bison>
+    <Flex>
+      <OutputFile>%(Filename).flex.cpp</OutputFile>
+    </Flex>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -128,6 +146,15 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Bison>
+      <FilePrefix>
+      </FilePrefix>
+      <OutputFile>%(OutputFile)</OutputFile>
+      <DefinesFile>%(Filename).tab.h</DefinesFile>
+    </Bison>
+    <Flex>
+      <OutputFile>%(Filename).flex.cpp</OutputFile>
+    </Flex>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -145,6 +172,15 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Bison>
+      <FilePrefix>
+      </FilePrefix>
+      <OutputFile>%(OutputFile)</OutputFile>
+      <DefinesFile>%(Filename).tab.h</DefinesFile>
+    </Bison>
+    <Flex>
+      <OutputFile>%(Filename).flex.cpp</OutputFile>
+    </Flex>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Flex Include="flex_bison\sample.l">
@@ -155,13 +191,14 @@
     <Bison Include="flex_bison\sample.y" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="flex_bison\sample.flex.cpp" />
+    <ClCompile Include="flex_bison\sample.tab.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="gen\sample.flex.cpp" />
-    <ClCompile Include="gen\sample.tab.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FlexLexer.h" />
-    <ClInclude Include="gen\sample.tab.h" />
+    <ClInclude Include="flex_bison\location.hh" />
+    <ClInclude Include="flex_bison\sample.tab.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\test.twi" />

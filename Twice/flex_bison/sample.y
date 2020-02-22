@@ -23,6 +23,8 @@
 %start start
 %type <std::string> stream optline stmt expr
 
+%locations
+
 %%
 start: stream                                                 { }
   ;
@@ -40,7 +42,7 @@ stmt:
   ;
 
 expr:
-  NUM                                                         { std::cout << "number: " << $1 << std::endl; }
+  NUM                                                         { std::cout << "number: " << yy::location() << ", " << $1 << std::endl; }
   | IDENTIFIER                                                { std::cout << "identifier: " << $1 << std::endl; }
   ;
 

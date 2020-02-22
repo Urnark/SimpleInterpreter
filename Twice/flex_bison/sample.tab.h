@@ -92,7 +92,7 @@
 #else
 # define YY_CONSTEXPR
 #endif
-
+# include "location.hh"
 
 #ifndef YY_ASSERT
 # include <cassert>
@@ -391,19 +391,25 @@ namespace yy {
 #else
     typedef YYSTYPE semantic_type;
 #endif
+    /// Symbol locations.
+    typedef location location_type;
 
     /// Syntax errors thrown from user actions.
     struct syntax_error : std::runtime_error
     {
-      syntax_error (const std::string& m)
+      syntax_error (const location_type& l, const std::string& m)
         : std::runtime_error (m)
+        , location (l)
       {}
 
       syntax_error (const syntax_error& s)
         : std::runtime_error (s.what ())
+        , location (s.location)
       {}
 
       ~syntax_error () YY_NOEXCEPT YY_NOTHROW;
+
+      location_type location;
     };
 
     /// Tokens.
@@ -435,7 +441,7 @@ namespace yy {
     /// Expects its Base type to provide access to the symbol type
     /// via type_get ().
     ///
-    /// Provide access to semantic value.
+    /// Provide access to semantic value and location.
     template <typename Base>
     struct basic_symbol : Base
     {
@@ -445,6 +451,7 @@ namespace yy {
       /// Default constructor.
       basic_symbol ()
         : value ()
+        , location ()
       {}
 
 #if 201103L <= YY_CPLUSPLUS
@@ -457,34 +464,40 @@ namespace yy {
 
       /// Constructor for valueless symbols, and symbols from each type.
 #if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t)
+      basic_symbol (typename Base::kind_type t, location_type&& l)
         : Base (t)
+        , location (std::move (l))
       {}
 #else
-      basic_symbol (typename Base::kind_type t)
+      basic_symbol (typename Base::kind_type t, const location_type& l)
         : Base (t)
+        , location (l)
       {}
 #endif
 #if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t, double&& v)
+      basic_symbol (typename Base::kind_type t, double&& v, location_type&& l)
         : Base (t)
         , value (std::move (v))
+        , location (std::move (l))
       {}
 #else
-      basic_symbol (typename Base::kind_type t, const double& v)
+      basic_symbol (typename Base::kind_type t, const double& v, const location_type& l)
         : Base (t)
         , value (v)
+        , location (l)
       {}
 #endif
 #if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t, std::string&& v)
+      basic_symbol (typename Base::kind_type t, std::string&& v, location_type&& l)
         : Base (t)
         , value (std::move (v))
+        , location (std::move (l))
       {}
 #else
-      basic_symbol (typename Base::kind_type t, const std::string& v)
+      basic_symbol (typename Base::kind_type t, const std::string& v, const location_type& l)
         : Base (t)
         , value (v)
+        , location (l)
       {}
 #endif
 
@@ -538,6 +551,9 @@ switch (yytype)
 
       /// The semantic value.
       semantic_type value;
+
+      /// The location.
+      location_type location;
 
     private:
 #if YY_CPLUSPLUS < 201103L
@@ -593,40 +609,40 @@ switch (yytype)
 
       /// Constructor for valueless symbols, and symbols from each type.
 #if 201103L <= YY_CPLUSPLUS
-      symbol_type (int tok)
-        : super_type(token_type (tok))
+      symbol_type (int tok, location_type l)
+        : super_type(token_type (tok), std::move (l))
       {
         YY_ASSERT (tok == token::ENDOF);
       }
 #else
-      symbol_type (int tok)
-        : super_type(token_type (tok))
+      symbol_type (int tok, const location_type& l)
+        : super_type(token_type (tok), l)
       {
         YY_ASSERT (tok == token::ENDOF);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
-      symbol_type (int tok, double v)
-        : super_type(token_type (tok), std::move (v))
+      symbol_type (int tok, double v, location_type l)
+        : super_type(token_type (tok), std::move (v), std::move (l))
       {
         YY_ASSERT (tok == token::NUM);
       }
 #else
-      symbol_type (int tok, const double& v)
-        : super_type(token_type (tok), v)
+      symbol_type (int tok, const double& v, const location_type& l)
+        : super_type(token_type (tok), v, l)
       {
         YY_ASSERT (tok == token::NUM);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
-      symbol_type (int tok, std::string v)
-        : super_type(token_type (tok), std::move (v))
+      symbol_type (int tok, std::string v, location_type l)
+        : super_type(token_type (tok), std::move (v), std::move (l))
       {
         YY_ASSERT (tok == token::IDENTIFIER || tok == token::NEWLINE);
       }
 #else
-      symbol_type (int tok, const std::string& v)
-        : super_type(token_type (tok), v)
+      symbol_type (int tok, const std::string& v, const location_type& l)
+        : super_type(token_type (tok), v, l)
       {
         YY_ASSERT (tok == token::IDENTIFIER || tok == token::NEWLINE);
       }
@@ -660,8 +676,9 @@ switch (yytype)
 #endif
 
     /// Report a syntax error.
+    /// \param loc    where the syntax error is found.
     /// \param msg    a description of the syntax error.
-    virtual void error (const std::string& msg);
+    virtual void error (const location_type& loc, const std::string& msg);
 
     /// Report a syntax error.
     void error (const syntax_error& err);
@@ -670,61 +687,61 @@ switch (yytype)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_ENDOF ()
+      make_ENDOF (location_type l)
       {
-        return symbol_type (token::ENDOF);
+        return symbol_type (token::ENDOF, std::move (l));
       }
 #else
       static
       symbol_type
-      make_ENDOF ()
+      make_ENDOF (const location_type& l)
       {
-        return symbol_type (token::ENDOF);
+        return symbol_type (token::ENDOF, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_IDENTIFIER (std::string v)
+      make_IDENTIFIER (std::string v, location_type l)
       {
-        return symbol_type (token::IDENTIFIER, std::move (v));
+        return symbol_type (token::IDENTIFIER, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_IDENTIFIER (const std::string& v)
+      make_IDENTIFIER (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::IDENTIFIER, v);
+        return symbol_type (token::IDENTIFIER, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_NEWLINE (std::string v)
+      make_NEWLINE (std::string v, location_type l)
       {
-        return symbol_type (token::NEWLINE, std::move (v));
+        return symbol_type (token::NEWLINE, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_NEWLINE (const std::string& v)
+      make_NEWLINE (const std::string& v, const location_type& l)
       {
-        return symbol_type (token::NEWLINE, v);
+        return symbol_type (token::NEWLINE, v, l);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_NUM (double v)
+      make_NUM (double v, location_type l)
       {
-        return symbol_type (token::NUM, std::move (v));
+        return symbol_type (token::NUM, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_NUM (const double& v)
+      make_NUM (const double& v, const location_type& l)
       {
-        return symbol_type (token::NUM, v);
+        return symbol_type (token::NUM, v, l);
       }
 #endif
 
@@ -1093,6 +1110,7 @@ switch (yytype)
   parser::basic_symbol<Base>::basic_symbol (basic_symbol&& that)
     : Base (std::move (that))
     , value ()
+    , location (std::move (that.location))
   {
     switch (this->type_get ())
     {
@@ -1120,6 +1138,7 @@ switch (yytype)
   parser::basic_symbol<Base>::basic_symbol (const basic_symbol& that)
     : Base (that)
     , value ()
+    , location (that.location)
   {
     switch (this->type_get ())
     {
@@ -1175,6 +1194,7 @@ switch (yytype)
         break;
     }
 
+    location = YY_MOVE (s.location);
   }
 
   // by_type.
@@ -1225,7 +1245,7 @@ switch (yytype)
   }
 
 } // yy
-#line 1229 "sample.tab.h"
+#line 1249 "sample.tab.h"
 
 
 
