@@ -1,0 +1,142 @@
+Grammar
+
+    0 $accept: start "end of file"
+
+    1 start: stream
+
+    2 stream: optline
+    3       | stream NEWLINE optline
+
+    4 optline: %empty
+    5        | stmt
+
+    6 stmt: expr
+
+    7 expr: NUM
+    8     | IDENTIFIER
+
+
+Terminals, with rules where they appear
+
+    "end of file" (0) 0
+    error (256)
+    IDENTIFIER <std::string> (258) 8
+    NEWLINE <std::string> (259) 3
+    NUM <double> (260) 7
+
+
+Nonterminals, with rules where they appear
+
+    $accept (6)
+        on left: 0
+    start (7)
+        on left: 1
+        on right: 0
+    stream <std::string> (8)
+        on left: 2 3
+        on right: 1 3
+    optline <std::string> (9)
+        on left: 4 5
+        on right: 2 3
+    stmt <std::string> (10)
+        on left: 6
+        on right: 5
+    expr <std::string> (11)
+        on left: 7 8
+        on right: 6
+
+
+State 0
+
+    0 $accept: . start "end of file"
+
+    IDENTIFIER  shift, and go to state 1
+    NUM         shift, and go to state 2
+
+    $default  reduce using rule 4 (optline)
+
+    start    go to state 3
+    stream   go to state 4
+    optline  go to state 5
+    stmt     go to state 6
+    expr     go to state 7
+
+
+State 1
+
+    8 expr: IDENTIFIER .
+
+    $default  reduce using rule 8 (expr)
+
+
+State 2
+
+    7 expr: NUM .
+
+    $default  reduce using rule 7 (expr)
+
+
+State 3
+
+    0 $accept: start . "end of file"
+
+    "end of file"  shift, and go to state 8
+
+
+State 4
+
+    1 start: stream .
+    3 stream: stream . NEWLINE optline
+
+    NEWLINE  shift, and go to state 9
+
+    $default  reduce using rule 1 (start)
+
+
+State 5
+
+    2 stream: optline .
+
+    $default  reduce using rule 2 (stream)
+
+
+State 6
+
+    5 optline: stmt .
+
+    $default  reduce using rule 5 (optline)
+
+
+State 7
+
+    6 stmt: expr .
+
+    $default  reduce using rule 6 (stmt)
+
+
+State 8
+
+    0 $accept: start "end of file" .
+
+    $default  accept
+
+
+State 9
+
+    3 stream: stream NEWLINE . optline
+
+    IDENTIFIER  shift, and go to state 1
+    NUM         shift, and go to state 2
+
+    $default  reduce using rule 4 (optline)
+
+    optline  go to state 10
+    stmt     go to state 6
+    expr     go to state 7
+
+
+State 10
+
+    3 stream: stream NEWLINE optline .
+
+    $default  reduce using rule 3 (stream)

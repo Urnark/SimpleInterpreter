@@ -3,11 +3,13 @@
 #include "../flex_bison/location.hh"
 
 extern FILE* yyin;
+extern yy::location location;
 
 void yy::parser::error(const yy::location&loc, std::string const& err)
 {
-	std::cout << "It's one of the bad ones... " << err << ", loc: " << loc << std::endl;
+	std::cout << loc.begin.filename->c_str() << "(" << loc.begin.line << "," << loc.begin.column << "): " << "ERROR: " << err << std::endl;
 }
+
 int main()
 {
 	std::string filename = "test.twi";
@@ -16,6 +18,7 @@ int main()
 	{
 		std::cout << "could not open file [" << scriptsFolder + filename << "]" << std::endl;
 	}
+	location.initialize(&filename);
 
 	yy::parser parser;
 	parser.parse();

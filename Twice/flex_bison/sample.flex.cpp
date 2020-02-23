@@ -1,9 +1,17 @@
 #line 1 "sample.flex.cpp"
 #include "sample.tab.h"
 #include "location.hh"
+#include <string>
 #define YY_DECL yy::parser::symbol_type yylex()
 
-#line 6 "sample.flex.cpp"
+yy::location location;
+
+const yy::location& next_column(int count = 1);
+const yy::location& next_line(int count = 1);
+
+void flex_error(const yy::location& loc, const std::string& text);
+
+#line 14 "sample.flex.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -166,27 +174,8 @@ extern FILE *yyin, *yyout;
 #define EOB_ACT_END_OF_FILE 1
 #define EOB_ACT_LAST_MATCH 2
     
-    /* Note: We specifically omit the test for yy_rule_can_match_eol because it requires
-     *       access to the local variable yy_act. Since yyless() is a macro, it would break
-     *       existing scanners that call yyless() from OUTSIDE yylex.
-     *       One obvious solution it to make yy_act a global. I tried that, and saw
-     *       a 5% performance hit in a non-yylineno scanner, because yy_act is
-     *       normally declared as a register variable-- so it is not worth it.
-     */
-    #define  YY_LESS_LINENO(n) \
-            do { \
-                int yyl;\
-                for ( yyl = n; yyl < yyleng; ++yyl )\
-                    if ( yytext[yyl] == '\n' )\
-                        --yylineno;\
-            }while(0)
-    #define YY_LINENO_REWIND_TO(dst) \
-            do {\
-                const char *p;\
-                for ( p = yy_cp-1; p >= (dst); --p)\
-                    if ( *p == '\n' )\
-                        --yylineno;\
-            }while(0)
+    #define YY_LESS_LINENO(n)
+    #define YY_LINENO_REWIND_TO(ptr)
     
 /* Return all but the first "n" matched characters back to the input stream. */
 #define yyless(n) \
@@ -377,8 +366,8 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 5
-#define YY_END_OF_BUFFER 6
+#define YY_NUM_RULES 6
+#define YY_END_OF_BUFFER 7
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -386,28 +375,28 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static const flex_int16_t yy_accept[18] =
+static const flex_int16_t yy_accept[19] =
     {   0,
-        2,    2,    6,    5,    4,    3,    5,    2,    1,    4,
-        2,    0,    2,    1,    1,    2,    0
+        2,    2,    7,    5,    4,    3,    3,    5,    2,    1,
+        4,    2,    0,    2,    1,    1,    2,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
     {   0,
         1,    1,    1,    1,    1,    1,    1,    1,    2,    3,
-        1,    1,    3,    1,    1,    1,    1,    1,    1,    1,
+        1,    1,    4,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    2,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    4,    1,    5,    5,    5,
-        5,    5,    5,    5,    5,    5,    5,    1,    1,    1,
-        1,    1,    1,    1,    6,    6,    6,    6,    6,    6,
-        6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
-        6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
-        1,    1,    1,    1,    1,    1,    6,    6,    6,    6,
+        1,    1,    1,    1,    1,    5,    1,    6,    6,    6,
+        6,    6,    6,    6,    6,    6,    6,    1,    1,    1,
+        1,    1,    1,    1,    7,    7,    7,    7,    7,    7,
+        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
+        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
+        1,    1,    1,    1,    1,    1,    7,    7,    7,    7,
 
-        6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
-        6,    6,    6,    6,    6,    6,    6,    6,    6,    6,
-        6,    6,    1,    1,    1,    1,    1,    1,    1,    1,
+        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
+        7,    7,    7,    7,    7,    7,    7,    7,    7,    7,
+        7,    7,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -424,41 +413,36 @@ static const YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static const YY_CHAR yy_meta[7] =
+static const YY_CHAR yy_meta[8] =
     {   0,
-        1,    2,    1,    1,    3,    1
+        1,    1,    1,    1,    1,    1,    1
     } ;
 
-static const flex_int16_t yy_base[20] =
+static const flex_int16_t yy_base[19] =
     {   0,
-        0,    0,   14,   15,    0,   15,    0,    3,    4,    0,
-        8,    0,    0,    0,    0,    0,   15,   10,    8
+        0,    0,   17,   18,   14,   18,   18,    9,    3,    4,
+       12,    7,    6,    0,    0,    0,    0,   18
     } ;
 
-static const flex_int16_t yy_def[20] =
+static const flex_int16_t yy_def[19] =
     {   0,
-       17,    1,   17,   17,   18,   17,   19,   17,   17,   18,
-        8,   19,    8,    9,    9,   11,    0,   17,   17
+       18,    1,   18,   18,   18,   18,   18,   18,   18,   18,
+       18,    9,   18,    9,   10,   10,   12,    0
     } ;
 
-static const flex_int16_t yy_nxt[22] =
+static const flex_int16_t yy_nxt[26] =
     {   0,
-        4,    5,    6,    7,    8,    9,   12,   13,   14,   15,
-       11,   10,   16,   17,    3,   17,   17,   17,   17,   17,
-       17
+        4,    5,    6,    7,    8,    9,   10,   13,   14,   15,
+       16,   12,   17,   11,   12,   11,   18,    3,   18,   18,
+       18,   18,   18,   18,   18
     } ;
 
-static const flex_int16_t yy_chk[22] =
+static const flex_int16_t yy_chk[26] =
     {   0,
-        1,    1,    1,    1,    1,    1,    8,    8,    9,    9,
-       19,   18,   11,    3,   17,   17,   17,   17,   17,   17,
-       17
+        1,    1,    1,    1,    1,    1,    1,    9,    9,   10,
+       10,   13,   12,   11,    8,    5,    3,   18,   18,   18,
+       18,   18,   18,   18,   18
     } ;
-
-/* Table of booleans, true if rule could match eol. */
-static const flex_int32_t yy_rule_can_match_eol[6] =
-    {   0,
-0, 0, 1, 0, 0,     };
 
 static yy_state_type yy_last_accepting_state;
 static char *yy_last_accepting_cpos;
@@ -477,7 +461,7 @@ char *yytext;
 #line 1 "sample.l"
 
 #define YY_NO_INPUT 1
-#line 480 "sample.flex.cpp"
+#line 464 "sample.flex.cpp"
 
 #define INITIAL 0
 
@@ -689,9 +673,10 @@ YY_DECL
 		}
 
 	{
-#line 15 "sample.l"
+#line 24 "sample.l"
 
-#line 694 "sample.flex.cpp"
+
+#line 679 "sample.flex.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -718,13 +703,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 18 )
+				if ( yy_current_state >= 19 )
 					yy_c = yy_meta[yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 			++yy_cp;
 			}
-		while ( yy_current_state != 17 );
+		while ( yy_current_state != 18 );
 		yy_cp = (yy_last_accepting_cpos);
 		yy_current_state = (yy_last_accepting_state);
 
@@ -732,16 +717,6 @@ yy_find_action:
 		yy_act = yy_accept[yy_current_state];
 
 		YY_DO_BEFORE_ACTION;
-
-		if ( yy_act != YY_END_OF_BUFFER && yy_rule_can_match_eol[yy_act] )
-			{
-			int yyl;
-			for ( yyl = 0; yyl < yyleng; ++yyl )
-				if ( yytext[yyl] == '\n' )
-					
-    yylineno++;
-;
-			}
 
 do_action:	/* This label is used only to access EOF actions. */
 
@@ -756,35 +731,40 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 16 "sample.l"
-{ return yy::parser::make_IDENTIFIER(yytext, yy::location()); }
+#line 26 "sample.l"
+{ return yy::parser::make_IDENTIFIER(yytext, next_column(yyleng)); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 17 "sample.l"
-{ return yy::parser::make_NUM(std::stod(yytext), yy::location()); }
+#line 27 "sample.l"
+{ return yy::parser::make_NUM(std::stod(yytext), next_column(yyleng)); }
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 18 "sample.l"
-{ return yy::parser::make_NEWLINE(yytext, yy::location()); }
+#line 28 "sample.l"
+{ return yy::parser::make_NEWLINE(yytext, next_line()); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 19 "sample.l"
-{ }
-	YY_BREAK
-case YY_STATE_EOF(INITIAL):
-#line 21 "sample.l"
-{ return yy::parser::make_ENDOF(yy::location()); }
+#line 29 "sample.l"
+{ next_column(yyleng); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 22 "sample.l"
+#line 31 "sample.l"
+{ next_column(yyleng); flex_error(location, yytext); }
+	YY_BREAK
+case YY_STATE_EOF(INITIAL):
+#line 32 "sample.l"
+{ return yy::parser::make_ENDOF(next_line()); }
+	YY_BREAK
+case 6:
+YY_RULE_SETUP
+#line 33 "sample.l"
 ECHO;
 	YY_BREAK
-#line 787 "sample.flex.cpp"
+#line 767 "sample.flex.cpp"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1080,7 +1060,7 @@ static int yy_get_next_buffer (void)
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 18 )
+			if ( yy_current_state >= 19 )
 				yy_c = yy_meta[yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
@@ -1108,11 +1088,11 @@ static int yy_get_next_buffer (void)
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 18 )
+		if ( yy_current_state >= 19 )
 			yy_c = yy_meta[yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
-	yy_is_jam = (yy_current_state == 17);
+	yy_is_jam = (yy_current_state == 18);
 
 		return yy_is_jam ? 0 : yy_current_state;
 }
@@ -1190,11 +1170,6 @@ static int yy_get_next_buffer (void)
 	c = *(unsigned char *) (yy_c_buf_p);	/* cast for 8-bit char's */
 	*(yy_c_buf_p) = '\0';	/* preserve yytext */
 	(yy_hold_char) = *++(yy_c_buf_p);
-
-	if ( c == '\n' )
-		
-    yylineno++;
-;
 
 	return c;
 }
@@ -1662,9 +1637,6 @@ static int yy_init_globals (void)
      * This function is called from yylex_destroy(), so don't allocate here.
      */
 
-    /* We do not touch yylineno unless the option is enabled. */
-    yylineno =  1;
-    
     (yy_buffer_stack) = NULL;
     (yy_buffer_stack_top) = 0;
     (yy_buffer_stack_max) = 0;
@@ -1759,5 +1731,24 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 22 "sample.l"
+#line 33 "sample.l"
 
+
+const yy::location& next_column(int count)
+{
+    location.step();
+    location.columns(count);
+    return location;
+}
+
+const yy::location& next_line(int count)
+{
+    location.step();
+    location.lines(count);
+    return location;
+}
+
+void flex_error(const yy::location& loc, const std::string& text)
+{
+	std::cout << loc.begin.filename->c_str() << "(" << loc.begin.line << "," << loc.begin.column << "): " << "ERROR: Unrecognized character '" << text << "'" << std::endl;
+}
