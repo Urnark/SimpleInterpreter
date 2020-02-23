@@ -193,12 +193,14 @@
   <ItemGroup>
     <ClCompile Include="flex_bison\sample.flex.cpp" />
     <ClCompile Include="flex_bison\sample.tab.cpp" />
+    <ClCompile Include="src\helper.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FlexLexer.h" />
     <ClInclude Include="flex_bison\location.hh" />
     <ClInclude Include="flex_bison\sample.tab.h" />
+    <ClInclude Include="src\helper.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\test.twi" />

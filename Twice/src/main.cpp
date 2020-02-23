@@ -1,16 +1,16 @@
 #include <iostream>
 #include "../flex_bison/sample.tab.h"
-#include "../flex_bison/location.hh"
+#include "helper.h"
 
 extern FILE* yyin;
-extern yy::location location;
+extern twice::Loc* curLoc;
 
 void yy::parser::error(const yy::location&loc, std::string const& err)
 {
 	std::cout << loc.begin.filename->c_str() << "(" << loc.begin.line << "," << loc.begin.column << "): " << "ERROR: " << err << std::endl;
 }
 
-int main()
+int main(int argc, char** argv)
 {
 	std::string filename = "test.twi";
 	std::string scriptsFolder = "scripts/";
@@ -18,13 +18,14 @@ int main()
 	{
 		std::cout << "could not open file [" << scriptsFolder + filename << "]" << std::endl;
 	}
-	location.initialize(&filename);
+	curLoc = new twice::Loc(&filename, scriptsFolder);
 
 	yy::parser parser;
 	parser.parse();
 
 	if (yyin)
 		fclose(yyin);
+	delete curLoc;
 
 	return 0;
 }

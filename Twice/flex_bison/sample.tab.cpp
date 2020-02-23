@@ -41,13 +41,13 @@
 
 
 // Unqualified %code blocks.
-#line 10 "sample.y"
+#line 11 "sample.y"
 
     #include <string>
     #define YY_DECL yy::parser::symbol_type yylex()
     YY_DECL;
 
-    extern yy::location location;
+    extern twice::Loc* curLoc;
 
 #line 53 "sample.tab.cpp"
 
@@ -208,17 +208,20 @@ namespace yy {
   {
     switch (that.type_get ())
     {
-      case 5: // NUM
-        value.YY_MOVE_OR_COPY< double > (YY_MOVE (that.value));
-        break;
-
-      case 3: // IDENTIFIER
-      case 4: // NEWLINE
       case 8: // stream
       case 9: // optline
       case 10: // stmt
       case 11: // expr
         value.YY_MOVE_OR_COPY< std::string > (YY_MOVE (that.value));
+        break;
+
+      case 5: // NUM
+        value.YY_MOVE_OR_COPY< twice::Token<double> > (YY_MOVE (that.value));
+        break;
+
+      case 3: // IDENTIFIER
+      case 4: // NEWLINE
+        value.YY_MOVE_OR_COPY< twice::Token<std::string> > (YY_MOVE (that.value));
         break;
 
       default:
@@ -236,17 +239,20 @@ namespace yy {
   {
     switch (that.type_get ())
     {
-      case 5: // NUM
-        value.move< double > (YY_MOVE (that.value));
-        break;
-
-      case 3: // IDENTIFIER
-      case 4: // NEWLINE
       case 8: // stream
       case 9: // optline
       case 10: // stmt
       case 11: // expr
         value.move< std::string > (YY_MOVE (that.value));
+        break;
+
+      case 5: // NUM
+        value.move< twice::Token<double> > (YY_MOVE (that.value));
+        break;
+
+      case 3: // IDENTIFIER
+      case 4: // NEWLINE
+        value.move< twice::Token<std::string> > (YY_MOVE (that.value));
         break;
 
       default:
@@ -264,17 +270,20 @@ namespace yy {
     state = that.state;
     switch (that.type_get ())
     {
-      case 5: // NUM
-        value.copy< double > (that.value);
-        break;
-
-      case 3: // IDENTIFIER
-      case 4: // NEWLINE
       case 8: // stream
       case 9: // optline
       case 10: // stmt
       case 11: // expr
         value.copy< std::string > (that.value);
+        break;
+
+      case 5: // NUM
+        value.copy< twice::Token<double> > (that.value);
+        break;
+
+      case 3: // IDENTIFIER
+      case 4: // NEWLINE
+        value.copy< twice::Token<std::string> > (that.value);
         break;
 
       default:
@@ -291,17 +300,20 @@ namespace yy {
     state = that.state;
     switch (that.type_get ())
     {
-      case 5: // NUM
-        value.move< double > (that.value);
-        break;
-
-      case 3: // IDENTIFIER
-      case 4: // NEWLINE
       case 8: // stream
       case 9: // optline
       case 10: // stmt
       case 11: // expr
         value.move< std::string > (that.value);
+        break;
+
+      case 5: // NUM
+        value.move< twice::Token<double> > (that.value);
+        break;
+
+      case 3: // IDENTIFIER
+      case 4: // NEWLINE
+        value.move< twice::Token<std::string> > (that.value);
         break;
 
       default:
@@ -554,17 +566,20 @@ namespace yy {
          when using variants.  */
       switch (yyr1_[yyn])
     {
-      case 5: // NUM
-        yylhs.value.emplace< double > ();
-        break;
-
-      case 3: // IDENTIFIER
-      case 4: // NEWLINE
       case 8: // stream
       case 9: // optline
       case 10: // stmt
       case 11: // expr
         yylhs.value.emplace< std::string > ();
+        break;
+
+      case 5: // NUM
+        yylhs.value.emplace< twice::Token<double> > ();
+        break;
+
+      case 3: // IDENTIFIER
+      case 4: // NEWLINE
+        yylhs.value.emplace< twice::Token<std::string> > ();
         break;
 
       default:
@@ -588,55 +603,55 @@ namespace yy {
           switch (yyn)
             {
   case 2:
-#line 31 "sample.y"
+#line 32 "sample.y"
                                                               { }
-#line 594 "sample.tab.cpp"
+#line 609 "sample.tab.cpp"
     break;
 
   case 3:
-#line 34 "sample.y"
+#line 35 "sample.y"
                                                               { }
-#line 600 "sample.tab.cpp"
+#line 615 "sample.tab.cpp"
     break;
 
   case 4:
-#line 35 "sample.y"
+#line 36 "sample.y"
                                                               { }
-#line 606 "sample.tab.cpp"
+#line 621 "sample.tab.cpp"
     break;
 
   case 5:
-#line 38 "sample.y"
+#line 39 "sample.y"
                                                               { }
-#line 612 "sample.tab.cpp"
+#line 627 "sample.tab.cpp"
     break;
 
   case 6:
-#line 39 "sample.y"
+#line 40 "sample.y"
                                                               { }
-#line 618 "sample.tab.cpp"
+#line 633 "sample.tab.cpp"
     break;
 
   case 7:
-#line 43 "sample.y"
+#line 44 "sample.y"
                                                               { }
-#line 624 "sample.tab.cpp"
+#line 639 "sample.tab.cpp"
     break;
 
   case 8:
-#line 47 "sample.y"
-                                                              { std::cout << "number: " << yy::location() << ", " << yystack_[0].value.as < double > () << std::endl; }
-#line 630 "sample.tab.cpp"
+#line 48 "sample.y"
+                                                              { std::cout << "number: " << curLoc->bline() << ", " << yystack_[0].value.as < twice::Token<double> > ().loc << " | " << yystack_[0].value.as < twice::Token<double> > ().data << std::endl; }
+#line 645 "sample.tab.cpp"
     break;
 
   case 9:
-#line 48 "sample.y"
-                                                              { std::cout << "identifier: " << yystack_[0].value.as < std::string > () << std::endl; }
-#line 636 "sample.tab.cpp"
+#line 49 "sample.y"
+                                                              { std::cout << "identifier: " << yystack_[0].value.as < twice::Token<std::string> > ().data << std::endl; }
+#line 651 "sample.tab.cpp"
     break;
 
 
-#line 640 "sample.tab.cpp"
+#line 655 "sample.tab.cpp"
 
             default:
               break;
@@ -893,7 +908,7 @@ namespace yy {
   const signed char
   parser::yyrline_[] =
   {
-       0,    31,    31,    34,    35,    38,    39,    43,    47,    48
+       0,    32,    32,    35,    36,    39,    40,    44,    48,    49
   };
 
   // Print the state stack on the debug stream.
@@ -927,6 +942,6 @@ namespace yy {
 
 
 } // yy
-#line 931 "sample.tab.cpp"
+#line 946 "sample.tab.cpp"
 
-#line 51 "sample.y"
+#line 52 "sample.y"

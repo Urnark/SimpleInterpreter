@@ -46,8 +46,9 @@
 // "%code requires" blocks.
 #line 7 "sample.y"
 
+  #include "../src/helper.h"
 
-#line 51 "sample.tab.h"
+#line 52 "sample.tab.h"
 
 
 # include <cstdlib> // std::abort
@@ -181,7 +182,7 @@
 #endif
 
 namespace yy {
-#line 185 "sample.tab.h"
+#line 186 "sample.tab.h"
 
 
 
@@ -363,16 +364,18 @@ namespace yy {
     /// An auxiliary type to compute the largest semantic type.
     union union_type
     {
-      // NUM
-      char dummy1[sizeof (double)];
-
-      // IDENTIFIER
-      // NEWLINE
       // stream
       // optline
       // stmt
       // expr
-      char dummy2[sizeof (std::string)];
+      char dummy1[sizeof (std::string)];
+
+      // NUM
+      char dummy2[sizeof (twice::Token<double>)];
+
+      // IDENTIFIER
+      // NEWLINE
+      char dummy3[sizeof (twice::Token<std::string>)];
     };
 
     /// The size of the largest semantic type.
@@ -475,19 +478,6 @@ namespace yy {
       {}
 #endif
 #if 201103L <= YY_CPLUSPLUS
-      basic_symbol (typename Base::kind_type t, double&& v, location_type&& l)
-        : Base (t)
-        , value (std::move (v))
-        , location (std::move (l))
-      {}
-#else
-      basic_symbol (typename Base::kind_type t, const double& v, const location_type& l)
-        : Base (t)
-        , value (v)
-        , location (l)
-      {}
-#endif
-#if 201103L <= YY_CPLUSPLUS
       basic_symbol (typename Base::kind_type t, std::string&& v, location_type&& l)
         : Base (t)
         , value (std::move (v))
@@ -495,6 +485,32 @@ namespace yy {
       {}
 #else
       basic_symbol (typename Base::kind_type t, const std::string& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, twice::Token<double>&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const twice::Token<double>& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, twice::Token<std::string>&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const twice::Token<std::string>& v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -523,17 +539,20 @@ namespace yy {
         // Type destructor.
 switch (yytype)
     {
-      case 5: // NUM
-        value.template destroy< double > ();
-        break;
-
-      case 3: // IDENTIFIER
-      case 4: // NEWLINE
       case 8: // stream
       case 9: // optline
       case 10: // stmt
       case 11: // expr
         value.template destroy< std::string > ();
+        break;
+
+      case 5: // NUM
+        value.template destroy< twice::Token<double> > ();
+        break;
+
+      case 3: // IDENTIFIER
+      case 4: // NEWLINE
+        value.template destroy< twice::Token<std::string> > ();
         break;
 
       default:
@@ -622,26 +641,26 @@ switch (yytype)
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
-      symbol_type (int tok, double v, location_type l)
+      symbol_type (int tok, twice::Token<double> v, location_type l)
         : super_type(token_type (tok), std::move (v), std::move (l))
       {
         YY_ASSERT (tok == token::NUM);
       }
 #else
-      symbol_type (int tok, const double& v, const location_type& l)
+      symbol_type (int tok, const twice::Token<double>& v, const location_type& l)
         : super_type(token_type (tok), v, l)
       {
         YY_ASSERT (tok == token::NUM);
       }
 #endif
 #if 201103L <= YY_CPLUSPLUS
-      symbol_type (int tok, std::string v, location_type l)
+      symbol_type (int tok, twice::Token<std::string> v, location_type l)
         : super_type(token_type (tok), std::move (v), std::move (l))
       {
         YY_ASSERT (tok == token::IDENTIFIER || tok == token::NEWLINE);
       }
 #else
-      symbol_type (int tok, const std::string& v, const location_type& l)
+      symbol_type (int tok, const twice::Token<std::string>& v, const location_type& l)
         : super_type(token_type (tok), v, l)
       {
         YY_ASSERT (tok == token::IDENTIFIER || tok == token::NEWLINE);
@@ -702,14 +721,14 @@ switch (yytype)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_IDENTIFIER (std::string v, location_type l)
+      make_IDENTIFIER (twice::Token<std::string> v, location_type l)
       {
         return symbol_type (token::IDENTIFIER, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_IDENTIFIER (const std::string& v, const location_type& l)
+      make_IDENTIFIER (const twice::Token<std::string>& v, const location_type& l)
       {
         return symbol_type (token::IDENTIFIER, v, l);
       }
@@ -717,14 +736,14 @@ switch (yytype)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_NEWLINE (std::string v, location_type l)
+      make_NEWLINE (twice::Token<std::string> v, location_type l)
       {
         return symbol_type (token::NEWLINE, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_NEWLINE (const std::string& v, const location_type& l)
+      make_NEWLINE (const twice::Token<std::string>& v, const location_type& l)
       {
         return symbol_type (token::NEWLINE, v, l);
       }
@@ -732,14 +751,14 @@ switch (yytype)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
-      make_NUM (double v, location_type l)
+      make_NUM (twice::Token<double> v, location_type l)
       {
         return symbol_type (token::NUM, std::move (v), std::move (l));
       }
 #else
       static
       symbol_type
-      make_NUM (const double& v, const location_type& l)
+      make_NUM (const twice::Token<double>& v, const location_type& l)
       {
         return symbol_type (token::NUM, v, l);
       }
@@ -1114,17 +1133,20 @@ switch (yytype)
   {
     switch (this->type_get ())
     {
-      case 5: // NUM
-        value.move< double > (std::move (that.value));
-        break;
-
-      case 3: // IDENTIFIER
-      case 4: // NEWLINE
       case 8: // stream
       case 9: // optline
       case 10: // stmt
       case 11: // expr
         value.move< std::string > (std::move (that.value));
+        break;
+
+      case 5: // NUM
+        value.move< twice::Token<double> > (std::move (that.value));
+        break;
+
+      case 3: // IDENTIFIER
+      case 4: // NEWLINE
+        value.move< twice::Token<std::string> > (std::move (that.value));
         break;
 
       default:
@@ -1142,17 +1164,20 @@ switch (yytype)
   {
     switch (this->type_get ())
     {
-      case 5: // NUM
-        value.copy< double > (YY_MOVE (that.value));
-        break;
-
-      case 3: // IDENTIFIER
-      case 4: // NEWLINE
       case 8: // stream
       case 9: // optline
       case 10: // stmt
       case 11: // expr
         value.copy< std::string > (YY_MOVE (that.value));
+        break;
+
+      case 5: // NUM
+        value.copy< twice::Token<double> > (YY_MOVE (that.value));
+        break;
+
+      case 3: // IDENTIFIER
+      case 4: // NEWLINE
+        value.copy< twice::Token<std::string> > (YY_MOVE (that.value));
         break;
 
       default:
@@ -1177,17 +1202,20 @@ switch (yytype)
     super_type::move (s);
     switch (this->type_get ())
     {
-      case 5: // NUM
-        value.move< double > (YY_MOVE (s.value));
-        break;
-
-      case 3: // IDENTIFIER
-      case 4: // NEWLINE
       case 8: // stream
       case 9: // optline
       case 10: // stmt
       case 11: // expr
         value.move< std::string > (YY_MOVE (s.value));
+        break;
+
+      case 5: // NUM
+        value.move< twice::Token<double> > (YY_MOVE (s.value));
+        break;
+
+      case 3: // IDENTIFIER
+      case 4: // NEWLINE
+        value.move< twice::Token<std::string> > (YY_MOVE (s.value));
         break;
 
       default:
@@ -1245,7 +1273,7 @@ switch (yytype)
   }
 
 } // yy
-#line 1249 "sample.tab.h"
+#line 1277 "sample.tab.h"
 
 
 

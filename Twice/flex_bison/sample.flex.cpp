@@ -1,15 +1,15 @@
 #line 1 "sample.flex.cpp"
 #include "sample.tab.h"
-#include "location.hh"
+#include "../src/helper.h"
 #include <string>
 #define YY_DECL yy::parser::symbol_type yylex()
 
-yy::location location;
+twice::Loc* curLoc;
 
 const yy::location& next_column(int count = 1);
 const yy::location& next_line(int count = 1);
 
-void flex_error(const yy::location& loc, const std::string& text);
+void flex_error(const twice::Loc& loc, const std::string& text);
 
 #line 14 "sample.flex.cpp"
 
@@ -732,18 +732,18 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 26 "sample.l"
-{ return yy::parser::make_IDENTIFIER(yytext, next_column(yyleng)); }
+{ return yy::parser::make_IDENTIFIER(twice::Token<std::string>(*curLoc, yytext), next_column(yyleng)); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
 #line 27 "sample.l"
-{ return yy::parser::make_NUM(std::stod(yytext), next_column(yyleng)); }
+{ return yy::parser::make_NUM(twice::Token<double>(*curLoc, std::stod(yytext)),next_column(yyleng)); }
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
 #line 28 "sample.l"
-{ return yy::parser::make_NEWLINE(yytext, next_line()); }
+{ return yy::parser::make_NEWLINE(twice::Token<std::string>(*curLoc, yytext), next_line()); }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
@@ -753,7 +753,7 @@ YY_RULE_SETUP
 case 5:
 YY_RULE_SETUP
 #line 31 "sample.l"
-{ next_column(yyleng); flex_error(location, yytext); }
+{ next_column(yyleng); flex_error(*curLoc, yytext); }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
 #line 32 "sample.l"
@@ -1736,19 +1736,19 @@ void yyfree (void * ptr )
 
 const yy::location& next_column(int count)
 {
-    location.step();
-    location.columns(count);
-    return location;
+    curLoc->step();
+    curLoc->columns(count);
+    return *dynamic_cast<yy::location*>(curLoc);
 }
 
 const yy::location& next_line(int count)
 {
-    location.step();
-    location.lines(count);
-    return location;
+    curLoc->step();
+    curLoc->lines(count);
+    return *dynamic_cast<yy::location*>(curLoc);
 }
 
-void flex_error(const yy::location& loc, const std::string& text)
+void flex_error(const twice::Loc& loc, const std::string& text)
 {
-	std::cout << loc.begin.filename->c_str() << "(" << loc.begin.line << "," << loc.begin.column << "): " << "ERROR: Unrecognized character '" << text << "'" << std::endl;
+	std::cout << loc << ": " << "ERROR: Unrecognized character '" << text << "'" << std::endl;
 }

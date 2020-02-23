@@ -5,6 +5,7 @@
 %define api.token.constructor
 
 %code requires {
+  #include "../src/helper.h"
 }
 
 %code{
@@ -12,15 +13,15 @@
     #define YY_DECL yy::parser::symbol_type yylex()
     YY_DECL;
 
-    extern yy::location location;
+    extern twice::Loc* curLoc;
 }
 
 %token
   ENDOF 0 "end of file"
 ;
 
-%token <std::string> IDENTIFIER NEWLINE
-%token <double> NUM
+%token <twice::Token<std::string>> IDENTIFIER NEWLINE
+%token <twice::Token<double>> NUM
 
 %start start
 %type <std::string> stream optline stmt expr
@@ -44,8 +45,8 @@ stmt:
   ;
 
 expr:
-  NUM                                                         { std::cout << "number: " << yy::location() << ", " << $1 << std::endl; }
-  | IDENTIFIER                                                { std::cout << "identifier: " << $1 << std::endl; }
+  NUM                                                         { std::cout << "number: " << curLoc->bline() << ", " << $1.loc << " | " << $1.data << std::endl; }
+  | IDENTIFIER                                                { std::cout << "identifier: " << $1.data << std::endl; }
   ;
 
 %%
